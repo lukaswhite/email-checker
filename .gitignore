@@ -1,0 +1,7 @@
+vendor/
+log/
+html-coverage/
+.DS_Store
+.idea/
+.phpunit.result.cache
+repo/
