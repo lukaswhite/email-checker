@@ -2,7 +2,7 @@
 
 A library for checking an e-mail address to see if it's from a provider of free or disposable providers.
 
-It's essentially a PHP client around the data provided by the [freemail](https://github.com/willwhite/freemail) project.
+It's essentially a PHP wrapper around the data provided by the [freemail](https://github.com/willwhite/freemail) project, with a straightforward way to keep the data up-to-date.
 
 ## Usage
 
@@ -25,7 +25,7 @@ $result->isFree(); // false
 $result->isBlacklisted(); // false
 ```
 
-To update the data:
+To update the data; for example, via a cron job:
 
 ```php
 $sync = new \Lukaswhite\EmailChecker\Data\Sync('./some/local/path');
@@ -34,6 +34,6 @@ $sync->update();
 
 ## Under the Hood
 
-The package works by fetching the [freemail](https://github.com/willwhite/freemail) package into a local folder, then looking up an email's domain from that data.
+The package works by fetching the [freemail](https://github.com/willwhite/freemail) package using Git into a local folder, then looking up an email's domain from that data.
 
 Running the update method simply pulls in any changes from the remote Git repository. 

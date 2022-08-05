@@ -58,4 +58,5 @@ class CheckerTest extends \PHPUnit\Framework\TestCase
         $checker = new \Lukaswhite\EmailChecker\Checker('./tests/fixtures/repo-wrong-package-json');
         $result = $checker->check('hello@mailinator.com');
     }
+
 }

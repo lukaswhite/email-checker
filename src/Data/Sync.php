@@ -3,13 +3,28 @@
 
 namespace Lukaswhite\EmailChecker\Data;
 
+use CzProject\GitPhp\Commit;
 use CzProject\GitPhp\Git;
 use CzProject\GitPhp\GitException;
 use Lukaswhite\EmailChecker\Exceptions\InvalidPathException;
 use Lukaswhite\EmailChecker\Exceptions\MissingDataException;
 
+/**
+ * Class Sync
+ * @package Lukaswhite\EmailChecker\Data
+ */
 class Sync
 {
+    /**
+     * @var string
+     */
+    protected $path;
+
+    /**
+     * @var string
+     */
+    protected $repoUri = 'https://github.com/willwhite/freemail';
+
     /**
      * Sync constructor.
      *
@@ -19,12 +34,15 @@ class Sync
      * any changes from Git.
      *
      * @param string $path
+     * @param bool $checkPath
      * @throws InvalidPathException
      */
-    public function __construct(string $path)
+    public function __construct(string $path, bool $checkPath = true)
     {
         $this->path = $path;
-        $this->checkPath();
+        if($checkPath) {
+            $this->checkPath();
+        }
     }
 
     /**
@@ -49,11 +67,12 @@ class Sync
      * Fetch the remote data.
      *
      * @throws \CzProject\GitPhp\GitException
+     * @codeCoverageIgnore
      */
     public function fetch()
     {
         $git = new Git;
-        $git->cloneRepository('https://github.com/willwhite/freemail', $this->path);
+        $git->cloneRepository($this->repoUri, $this->path);
     }
 
     /**
@@ -61,6 +80,7 @@ class Sync
      *
      * @throws GitException
      * @throws MissingDataException
+     * @codeCoverageIgnore
      */
     public function update()
     {
@@ -72,4 +92,47 @@ class Sync
         }
         $repo->pull('origin');
     }
+
+    /**
+     * @return Commit
+     * @throws MissingDataException
+     * @codeCoverageIgnore
+     */
+    public function getLastCommit(): Commit
+    {
+        $git = new Git;
+        try {
+            $repo = $git->open($this->path);
+            return $repo->getLastCommit();
+        } catch (GitException $e) {
+            throw new MissingDataException('Cannot find the data. Have you run the fetch command yet?');
+        }
+    }
+
+    /**
+     * @return \DateTimeImmutable
+     * @throws MissingDataException
+     * @codeCoverageIgnore
+     */
+    public function getLastUpdated(): \DateTimeImmutable
+    {
+        return $this->getLastCommit()->getDate();
+    }
+
+    /**
+     * @return string
+     */
+    public function getRepoUri(): string
+    {
+        return $this->repoUri;
+    }
+
+    /**
+     * @param string $repo
+     */
+    public function setRepoUri(string $repoUri): void
+    {
+        $this->repoUri = $repoUri;
+    }
+
 }

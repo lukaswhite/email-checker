@@ -11,6 +11,10 @@ use Lukaswhite\EmailChecker\Data\Types\Free;
 use Lukaswhite\EmailChecker\Exceptions\InvalidEmailException;
 use Lukaswhite\EmailChecker\Exceptions\MissingDataException;
 
+/**
+ * Class Checker
+ * @package Lukaswhite\EmailChecker
+ */
 class Checker
 {
     /**
@@ -21,6 +25,8 @@ class Checker
     /**
      * Checker constructor.
      * @param string $path
+     * @throws Exceptions\InvalidPathException
+     * @throws MissingDataException
      */
     public function __construct(string $path = './repo')
     {
@@ -42,7 +48,8 @@ class Checker
      * a provider of disposable/throwaway addresses, or if the domain has been blacklisted.
      *
      * @param string $address
-     * @return Email
+     * @return Email|mixed
+     * @throws InvalidEmailException
      */
     public function check(string $address)
     {
